@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Códice de Cristal – Uma Aventura de Layouts Mágicos</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a0e2e;
+    --parchment: #f5edd6;
+    --parchment-dark: #e8d9b5;
+    --gold: #c9952a;
+    --gold-light: #f0c84a;
+    --gold-glow: #ffd700;
+    --crystal-blue: #4a9eff;
+    --crystal-purple: #9b6dff;
+    --crystal-teal: #3dd6c8;
+    --fire-red: #e8402a;
+    --fire-orange: #f07030;
+    --magic-green: #4adb7a;
+    --shadow: rgba(26,14,46,0.35);
+    --chapter-bg: #2a1a4a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--ink);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ─── STAR FIELD ─── */
+  .starfield {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(ellipse at 20% 30%, #2a1a4a 0%, #0d0820 60%, #060412 100%);
+    overflow: hidden;
+  }
+  .starfield::before, .starfield::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 55%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 70% 25%, rgba(200,180,255,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 70%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 92% 35%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 80%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 85%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 45% 75%, rgba(180,220,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 90%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 78% 12%, rgba(255,255,255,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 18% 60%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 88%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(2px 2px at 50% 30%, rgba(255,220,150,0.8) 0%, transparent 100%);
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+  .starfield::after {
+    background-image:
+      radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 35% 65%, rgba(200,200,255,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 80% 80%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 95% 15%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 8% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 52% 92%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 72% 60%, rgba(180,255,220,0.8) 0%, transparent 100%);
+    animation-delay: 2s;
+    animation-duration: 5s;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+  }
+
+  /* ─── PAGES ─── */
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    text-align: center;
+    padding: 80px 40px 100px;
+    position: relative;
+  }
+
+  .cover-frame {
+    display: inline-block;
+    position: relative;
+    max-width: 780px;
+    width: 100%;
+    background: linear-gradient(160deg, #1e1040 0%, #2d1860 40%, #1a0e35 100%);
+    border-radius: 8px;
+    padding: 60px 50px 70px;
+    box-shadow:
+      0 0 0 3px var(--gold),
+      0 0 0 7px #2a1a4a,
+      0 0 0 10px var(--gold),
+      0 0 80px rgba(201,149,42,0.4),
+      inset 0 0 80px rgba(155,109,255,0.1);
+  }
+
+  .cover-ornament {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    animation: float 3s ease-in-out infinite;
+    display: block;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-12px) rotate(3deg); }
+  }
+
+  .cover-subtitle-top {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.4em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .cover-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--gold-light);
+    text-shadow:
+      0 0 20px rgba(240,200,74,0.8),
+      0 0 60px rgba(240,200,74,0.4),
+      2px 2px 0 rgba(201,149,42,0.6);
+    margin-bottom: 16px;
+  }
+
+  .cover-dash {
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 16px auto;
+  }
+
+  .cover-tagline {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    color: #c8aeff;
+    letter-spacing: 0.15em;
+    font-weight: 400;
+    margin-bottom: 30px;
+  }
+
+  .cover-illustration {
+    font-size: clamp(5rem, 12vw, 9rem);
+    line-height: 1;
+    margin: 30px 0;
+    display: block;
+    filter: drop-shadow(0 0 30px rgba(155,109,255,0.7)) drop-shadow(0 0 60px rgba(74,158,255,0.4));
+    animation: pulse-glow 2.5s ease-in-out infinite alternate;
+  }
+  @keyframes pulse-glow {
+    0% { filter: drop-shadow(0 0 20px rgba(155,109,255,0.6)) drop-shadow(0 0 40px rgba(74,158,255,0.3)); }
+    100% { filter: drop-shadow(0 0 40px rgba(155,109,255,0.9)) drop-shadow(0 0 80px rgba(74,158,255,0.6)) drop-shadow(0 0 100px rgba(240,200,74,0.2)); }
+  }
+
+  .cover-magic-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  .magic-tag {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    padding: 5px 14px;
+    border: 1px solid;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .tag-html { color: var(--fire-orange); border-color: var(--fire-orange); }
+  .tag-css  { color: var(--crystal-blue); border-color: var(--crystal-blue); }
+  .tag-flex { color: var(--crystal-purple); border-color: var(--crystal-purple); }
+  .tag-resp { color: var(--magic-green); border-color: var(--magic-green); }
+
+  .corner {
+    position: absolute;
+    font-size: 1.6rem;
+    opacity: 0.7;
+  }
+  .corner-tl { top: 14px; left: 14px; }
+  .corner-tr { top: 14px; right: 14px; transform: scaleX(-1); }
+  .corner-bl { bottom: 14px; left: 14px; transform: scaleY(-1); }
+  .corner-br { bottom: 14px; right: 14px; transform: scale(-1,-1); }
+
+  /* ─── SECTION DIVIDER ─── */
+  .divider {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 1.8rem;
+    opacity: 0.5;
+    position: relative;
+    z-index: 1;
+  }
+  .divider-line {
+    width: 60%;
+    max-width: 500px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 10px auto;
+  }
+
+  /* ─── PARCHMENT CARD ─── */
+  .parchment-page {
+    background:
+      url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"),
+      linear-gradient(160deg, #f8eedb 0%, #f0e0b8 40%, #e8d5a8 70%, #f2e6c8 100%);
+    border-radius: 6px;
+    padding: 50px 55px;
+    max-width: 820px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    box-shadow:
+      0 0 0 2px var(--gold),
+      0 8px 60px rgba(26,14,46,0.6),
+      inset 0 0 30px rgba(201,149,42,0.08);
+  }
+
+  .parchment-page::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(201,149,42,0.3);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+
+  /* ─── CHAPTER HEADER ─── */
+  .chapter-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .chapter-number {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .chapter-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+    text-shadow: 1px 1px 0 rgba(201,149,42,0.3);
+  }
+  .chapter-emoji {
+    font-size: 2.5rem;
+    display: block;
+    margin: 10px 0;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+  }
+  .chapter-rule {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold) 20%, var(--gold) 80%, transparent);
+    margin: 20px 0 30px;
+  }
+
+  /* ─── BODY TEXT ─── */
+  .parchment-page p {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.9;
+    color: #2a1a0e;
+    margin-bottom: 18px;
+    text-align: justify;
+  }
+  .parchment-page p:first-of-type::first-letter {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: 4em;
+    float: left;
+    line-height: 0.75;
+    margin-right: 8px;
+    margin-top: 6px;
+    color: var(--gold);
+    text-shadow: 2px 2px 0 rgba(201,149,42,0.4);
+  }
+
+  /* ─── CALLOUT BOXES ─── */
+  .callout {
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin: 24px 0;
+    position: relative;
+  }
+  .callout-spell {
+    background: linear-gradient(135deg, #1e1040, #2d1860);
+    border-left: 3px solid var(--crystal-purple);
+    color: #e8d5ff;
+    box-shadow: 0 4px 20px rgba(155,109,255,0.2);
+  }
+  .callout-spell::before {
+    content: '✨ FEITIÇO DO DIA';
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: #c8a8ff;
+    display: block;
+    margin-bottom: 8px;
+  }
+  /* Override parchment-page p default for dark callout backgrounds */
+  .callout-spell p { color: #e0ccff !important; font-style: italic; }
+  .callout-spell strong { color: #f0e0ff; }
+
+  .callout-scroll {
+    background: rgba(201,149,42,0.12);
+    border: 1px dashed rgba(201,149,42,0.6);
+    color: #2a1a0e;
+  }
+  .callout-scroll::before {
+    content: '📜 PERGAMINHO DO SABER';
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: #9a6e18;
+    display: block;
+    margin-bottom: 8px;
+  }
+  /* callout-scroll sits on parchment — keep dark text */
+  .callout-scroll p { color: #2a1a0e !important; font-style: normal; }
+  .callout-scroll strong { color: #1a0e00; }
+
+  .callout-dragon {
+    background: linear-gradient(135deg, #3a1008, #5a1a0a);
+    border-left: 3px solid var(--fire-orange);
+    color: #ffe0c8;
+    box-shadow: 0 4px 20px rgba(232,64,42,0.2);
+  }
+  .callout-dragon::before {
+    content: '🐉 CUIDADO! O DRAGÃO DU ERRU!';
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: #ffaa70;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .callout-dragon p { color: #ffe0c8 !important; }
+  .callout-dragon strong { color: #fff0e0; }
+
+  .callout-crystal {
+    background: linear-gradient(135deg, #0a2040, #0f3060);
+    border-left: 3px solid var(--crystal-blue);
+    color: #c8e8ff;
+    box-shadow: 0 4px 20px rgba(74,158,255,0.2);
+  }
+  .callout-crystal::before {
+    content: '💎 MISSÃO DO CRISTAL';
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: #80c8ff;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .callout-crystal p { color: #c8e8ff !important; }
+  .callout-crystal strong { color: #e0f4ff; }
+
+  .callout-teal {
+    background: linear-gradient(135deg, #0a3030, #0f4040);
+    border-left: 3px solid var(--crystal-teal);
+    color: #c8ffee;
+    box-shadow: 0 4px 20px rgba(61,214,200,0.2);
+  }
+  .callout-teal::before {
+    content: '🌊 MAGIA FLEXÍVEL';
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: #70e8d8;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .callout-teal p { color: #c8ffee !important; }
+  .callout-teal strong { color: #e0fff8; }
+
+  /* ─── CODE BLOCKS ─── */
+  .code-scroll {
+    background: #0d0820;
+    border: 1px solid rgba(155,109,255,0.3);
+    border-radius: 4px;
+    padding: 20px 22px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: inset 0 0 30px rgba(155,109,255,0.05);
+  }
+  .code-scroll::before {
+    content: '🔮 CÓDIGO MÁGICO';
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: rgba(155,109,255,0.6);
+    display: block;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(155,109,255,0.2);
+  }
+  .c-tag    { color: #9b6dff; }
+  .c-attr   { color: #4a9eff; }
+  .c-val    { color: #f0c84a; }
+  .c-str    { color: #4adb7a; }
+  .c-prop   { color: #3dd6c8; }
+  .c-num    { color: #f07030; }
+  .c-comment{ color: #8878a8; font-style: italic; }
+  .c-text   { color: #d4c8e8; }
+
+  /* ─── CHALLENGE BOXES ─── */
+  .challenge {
+    background: linear-gradient(135deg, #1a2a10, #253a18);
+    border: 1px solid var(--magic-green);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin: 28px 0;
+    box-shadow: 0 4px 20px rgba(74,219,122,0.15), inset 0 0 20px rgba(74,219,122,0.03);
+  }
+  .challenge-header {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    color: var(--magic-green);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .challenge p { color: #c8f0d4; margin-bottom: 8px; }
+  .challenge ul { color: #c8f0d4; padding-left: 20px; }
+  .challenge ul li { margin-bottom: 6px; line-height: 1.6; font-family: 'Crimson Pro', serif; font-size: 1rem; }
+
+  /* ─── CHARACTERS ─── */
+  .character-intro {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    background: rgba(201,149,42,0.10);
+    border: 1px solid rgba(201,149,42,0.25);
+    border-radius: 4px;
+    padding: 18px;
+    margin: 20px 0;
+  }
+  .char-avatar { font-size: 3rem; flex-shrink: 0; }
+  .char-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .char-quote {
+    font-style: italic;
+    color: #2a1a0e;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* ─── GLOSSARY ─── */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .glossary-item {
+    background: rgba(26,14,46,0.08);
+    border: 1px solid rgba(201,149,42,0.3);
+    border-radius: 4px;
+    padding: 16px;
+  }
+  .glossary-term {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+  .glossary-desc {
+    font-size: 0.92rem;
+    color: #3a2a1a;
+    line-height: 1.6;
+  }
+
+  /* ─── TOC ─── */
+  .toc-list {
+    list-style: none;
+    margin: 20px 0;
+  }
+  .toc-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px dotted rgba(201,149,42,0.3);
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.05rem;
+    color: #2a1a0e;
+  }
+  .toc-icon { font-size: 1.2rem; }
+  .toc-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--gold);
+    min-width: 80px;
+  }
+
+  /* ─── MAGIC RULE ─── */
+  .magic-rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 30px 0;
+    color: rgba(201,149,42,0.5);
+    font-size: 1.2rem;
+  }
+  .magic-rule::before, .magic-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,149,42,0.4));
+  }
+  .magic-rule::before { background: linear-gradient(to right, transparent, rgba(201,149,42,0.4)); }
+  .magic-rule::after  { background: linear-gradient(to left, transparent, rgba(201,149,42,0.4)); }
+
+  /* ─── FLEXBOX VISUAL DEMO ─── */
+  .flex-demo {
+    background: #0d0820;
+    border: 1px solid rgba(61,214,200,0.3);
+    border-radius: 6px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .flex-demo-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--crystal-teal);
+    margin-bottom: 12px;
+  }
+  .flex-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .flex-box {
+    padding: 10px 16px;
+    border-radius: 3px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: #fff;
+    text-align: center;
+  }
+  .fb1 { background: rgba(155,109,255,0.4); border: 1px solid var(--crystal-purple); flex: 1; }
+  .fb2 { background: rgba(74,158,255,0.4); border: 1px solid var(--crystal-blue); flex: 2; }
+  .fb3 { background: rgba(61,214,200,0.4); border: 1px solid var(--crystal-teal); flex: 1; }
+  .flex-row-center { justify-content: center; }
+  .flex-row-between { justify-content: space-between; }
+  .flex-row-end { justify-content: flex-end; }
+  .flex-label {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: rgba(61,214,200,0.6);
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  /* ─── RESPONSIVE DEMO ─── */
+  .resp-demo {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .resp-device {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 70px;
+  }
+  .resp-screen {
+    border-radius: 4px;
+    border: 2px solid var(--gold);
+    background: #0d0820;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px;
+  }
+  .resp-bar {
+    border-radius: 2px;
+    background: var(--crystal-purple);
+    opacity: 0.7;
+  }
+  .resp-device-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+  }
+
+  /* ─── FINAL PAGE ─── */
+  .final-glow {
+    text-align: center;
+    padding: 40px 30px;
+  }
+  .final-title {
+    font-family: 'Cinzel Decorative', cursive;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--gold-light);
+    text-shadow: 0 0 30px rgba(240,200,74,0.6);
+    margin-bottom: 16px;
+  }
+  .final-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: #c8aeff;
+    margin-bottom: 30px;
+  }
+  .star-row {
+    font-size: 2rem;
+    letter-spacing: 0.4em;
+    animation: sparkle 1.5s ease-in-out infinite alternate;
+    display: block;
+  }
+  @keyframes sparkle {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.5) drop-shadow(0 0 10px gold); }
+  }
+
+  /* ─── PRINT / PAGE UTIL ─── */
+  .page-break { page-break-before: always; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: #0d0820; }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 4px; }
+
+</style>
+</head>
+<body>
+
+<div class="starfield"></div>
+
+<!-- ════════════════════════════════════ COVER ════════════════════════════════════ -->
+<div class="page cover">
+  <div class="cover-frame">
+    <span class="corner corner-tl">✦</span>
+    <span class="corner corner-tr">✦</span>
+    <span class="corner corner-bl">✦</span>
+    <span class="corner corner-br">✦</span>
+
+    <div class="cover-subtitle-top">✦ Academia de Feitiçaria Digital ✦</div>
+
+    <span class="cover-illustration">🔮</span>
+
+    <h1 class="cover-title">O Códice<br>de Cristal</h1>
+    <div class="cover-dash"></div>
+    <div class="cover-tagline">Uma Aventura de Layouts Mágicos</div>
+
+    <p style="font-family:'Crimson Pro',serif;font-size:1.05rem;color:#c8aeff;line-height:1.7;max-width:480px;margin:0 auto 28px;font-style:italic;">
+      Aprenda HTML, CSS, Flexbox e Responsividade através de um reino encantado com magos, dragões e pergaminhos que ganham vida!
+    </p>
+
+    <div class="cover-magic-tags">
+      <span class="magic-tag tag-html">🔥 HTML</span>
+      <span class="magic-tag tag-css">💧 CSS</span>
+      <span class="magic-tag tag-flex">💎 Flexbox</span>
+      <span class="magic-tag tag-resp">🌿 Responsividade</span>
+    </div>
+
+    <div class="cover-dash" style="margin-top:28px;"></div>
+    <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.4em;color:rgba(200,180,255,0.5);margin-top:18px;">
+      ✦ PARA JOVENS FEITICEIROS DE 8 A 14 ANOS ✦
+    </div>
+  </div>
+</div>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  ✦ ✦ ✦
+  <div class="divider-line"></div>
+</div>
+
+<!-- ════════════════════════════════ TABLE OF CONTENTS ════════════════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Mapa da Aventura ✦</div>
+      <h2 class="chapter-title">Sumário dos Feitiços</h2>
+      <span class="chapter-emoji">📜</span>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <ul class="toc-list">
+      <li><span class="toc-icon">📖</span><span class="toc-num">Prólogo</span><span>O Chamado do Cristal — A História Começa</span></li>
+      <li><span class="toc-icon">🏰</span><span class="toc-num">Capítulo I</span><span>A Torre da Estrutura — Conhecendo o HTML</span></li>
+      <li><span class="toc-icon">🎨</span><span class="toc-num">Capítulo II</span><span>O Jardim das Cores — A Magia do CSS</span></li>
+      <li><span class="toc-icon">🔮</span><span class="toc-num">Capítulo III</span><span>O Cristal das Formas — Seletores e Estilos</span></li>
+      <li><span class="toc-icon">💎</span><span class="toc-num">Capítulo IV</span><span>O Feitiço Flexível — Dominando o Flexbox</span></li>
+      <li><span class="toc-icon">🌍</span><span class="toc-num">Capítulo V</span><span>O Espelho Responsivo — Layouts para Todo Dispositivo</span></li>
+      <li><span class="toc-icon">⚔️</span><span class="toc-num">Capítulo VI</span><span>A Grande Batalha — Desafio Final do Códice</span></li>
+      <li><span class="toc-icon">📚</span><span class="toc-num">Apêndice</span><span>O Grimório Completo — Glossário Mágico</span></li>
+    </ul>
+
+    <div class="magic-rule">✦</div>
+
+    <div class="character-intro">
+      <span class="char-avatar">🧙</span>
+      <div>
+        <div class="char-name">✦ O Mago Arkentus diz: ✦</div>
+        <p class="char-quote" style="color:#3a2a1a;">"Cada página que você virar é um feitiço novo dominado. Não pule etapas — um bom feiticeiro lê o pergaminho com atenção antes de agitar a varinha!"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ PRÓLOGO ════════════════════════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Prólogo ✦</div>
+      <h2 class="chapter-title">O Chamado do Cristal</h2>
+      <span class="chapter-emoji">🌟</span>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <p>
+      Era uma noite sem lua no Reino de Webéria quando o grande Códice de Cristal emitiu seu primeiro brilho em séculos. Suas páginas, feitas de luz pura, continham os segredos mais antigos da magia da criação — a arte de construir mundos inteiros a partir de palavras e cores.
+    </p>
+
+    <p>
+      Mas havia um problema: o Dragão du Erru havia embaralhado todos os feitiços! Tags sem fechamento voavam pelo ar, estilos coloridos coloriram o dragão de roxo sem querer, e as colunas mágicas do reino haviam desmoronado. Os pergaminhos precisavam ser reorganizados.
+    </p>
+
+    <div class="callout callout-spell">
+      <p>O Códice de Cristal só pode ser restaurado por um Jovem Feiticeiro que aprenda os quatro pilares da Magia Digital: <strong>Estrutura, Aparência, Flexibilidade e Adaptação</strong>. Esse feiticeiro… é você!</p>
+    </div>
+
+    <p>
+      O Mago Arkentus, guardião da Biblioteca de Bytes, estende para você uma varinha feita de código e diz com olhos brilhantes: "Cada elemento que você aprender é uma pedra que reconstrói nosso reino. Você está pronto para a aventura?"
+    </p>
+
+    <div class="character-intro">
+      <span class="char-avatar">🧙</span>
+      <div>
+        <div class="char-name">✦ Mago Arkentus ✦</div>
+        <p class="char-quote" style="color:#3a2a1a;">"Neste livro você vai criar páginas reais com código real. Não é só ler — é fazer! Pegue seu computador, abra o editor de texto e vamos começar nossa jornada juntos."</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">⚡ Missão Inicial</div>
+      <p>Antes de começar, prepare seu equipamento mágico:</p>
+      <ul>
+        <li>📁 Crie uma pasta no computador chamada <strong>"reino-weberia"</strong></li>
+        <li>📝 Baixe um editor de texto (VSCode, Notepad++ ou até o Bloco de Notas)</li>
+        <li>🌐 Tenha um navegador web aberto (Chrome, Firefox ou Edge)</li>
+        <li>✨ Abra este ebook ao lado do editor — aprenda fazendo!</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ CAPÍTULO I — HTML ════════════════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Capítulo I ✦</div>
+      <h2 class="chapter-title">A Torre da Estrutura</h2>
+      <span class="chapter-emoji">🏰</span>
+      <p style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;margin-top:8px;">Conhecendo o HTML</p>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <p>
+      No coração do Reino de Webéria erguia-se a Torre da Estrutura — uma construção imponente feita de blocos mágicos que os habitantes chamavam de <em>tags</em>. Cada bloco tinha uma função: uns sustentavam as paredes, outros guardavam textos, outros abriam janelas para o mundo exterior.
+    </p>
+
+    <div class="callout callout-scroll">
+      <p><strong>HTML</strong> significa <em>HyperText Markup Language</em> — em português: "Linguagem de Marcação de Hipertexto". É o esqueleto de toda página web. Sem HTML, não há página!</p>
+    </div>
+
+    <p>
+      "Veja bem, jovem feiticeiro," disse Arkentus apontando para um bloco brilhante, "cada tag tem uma abertura e um fechamento — como uma porta que precisa ser aberta E fechada. Esqueceu de fechar? O dragão aparece!"
+    </p>
+
+    <div class="code-scroll">
+<span class="c-comment">&lt;!-- Minha primeira página mágica --&gt;</span>
+<br><span class="c-tag">&lt;html</span> <span class="c-attr">lang</span>=<span class="c-val">"pt-BR"</span><span class="c-tag">&gt;</span>
+<br>&nbsp;&nbsp;<span class="c-tag">&lt;head&gt;</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">&lt;title&gt;</span><span class="c-text">Reino de Webéria</span><span class="c-tag">&lt;/title&gt;</span>
+<br>&nbsp;&nbsp;<span class="c-tag">&lt;/head&gt;</span>
+<br>&nbsp;&nbsp;<span class="c-tag">&lt;body&gt;</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">&lt;h1&gt;</span><span class="c-text">Bem-vindo, Feiticeiro!</span><span class="c-tag">&lt;/h1&gt;</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-tag">&lt;p&gt;</span><span class="c-text">Aqui começa sua aventura.</span><span class="c-tag">&lt;/p&gt;</span>
+<br>&nbsp;&nbsp;<span class="c-tag">&lt;/body&gt;</span>
+<br><span class="c-tag">&lt;/html&gt;</span>
+    </div>
+
+    <div class="callout callout-dragon">
+      <p>Nunca esqueça de fechar suas tags! <strong>&lt;p&gt;</strong> precisa de <strong>&lt;/p&gt;</strong> no final. O Dragão du Erru aparece em páginas com tags abertas!</p>
+    </div>
+
+    <p>
+      As tags mais usadas no reino formavam a Guarda Real do HTML. Cada uma tinha seu papel na construção das páginas:
+    </p>
+
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="glossary-term">🏷️ &lt;h1&gt; a &lt;h6&gt;</div>
+        <div class="glossary-desc">Os títulos do reino — do maior (h1) ao menor (h6)</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">📄 &lt;p&gt;</div>
+        <div class="glossary-desc">Parágrafos — os blocos de texto mais comuns</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">🖼️ &lt;img&gt;</div>
+        <div class="glossary-desc">Imagens — janelas visuais do pergaminho</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">🔗 &lt;a&gt;</div>
+        <div class="glossary-desc">Links — portais mágicos para outras páginas</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">📦 &lt;div&gt;</div>
+        <div class="glossary-desc">Caixas mágicas para organizar conteúdo</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">📋 &lt;ul&gt; &lt;ol&gt; &lt;li&gt;</div>
+        <div class="glossary-desc">Listas — pergaminhos numerados ou marcados</div>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">⚡ Missão do Capítulo I</div>
+      <p>Crie um arquivo chamado <strong>"index.html"</strong> dentro da pasta "reino-weberia" e escreva:</p>
+      <ul>
+        <li>Um título &lt;h1&gt; com o nome do seu reino</li>
+        <li>Três parágrafos &lt;p&gt; descrevendo seus personagens</li>
+        <li>Uma lista &lt;ul&gt; com 5 poderes mágicos</li>
+        <li>Abra o arquivo no navegador — sua página existe!</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ CAPÍTULO II — CSS ════════════════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Capítulo II ✦</div>
+      <h2 class="chapter-title">O Jardim das Cores</h2>
+      <span class="chapter-emoji">🎨</span>
+      <p style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;margin-top:8px;">A Magia do CSS</p>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <p>
+      Depois de construída, a Torre da Estrutura era cinzenta e sem graça. "Não basta existir," disse a Fada Chromelina, guardiã do Jardim das Cores, "é preciso <em>brilhar</em>!" E assim surgiu o CSS — a magia que dava vida e beleza a tudo que o HTML havia criado.
+    </p>
+
+    <div class="callout callout-spell">
+      <p><strong>CSS</strong> significa <em>Cascading Style Sheets</em> — "Folhas de Estilo em Cascata". É a linguagem que controla a aparência: cores, fontes, tamanhos, bordas e espaçamentos.</p>
+    </div>
+
+    <p>
+      O CSS funciona como um encantamento direcionado: você aponta para um elemento pelo nome, pela classe ou pelo ID, e lança o feitiço da aparência. O feitiço sempre segue o mesmo formato mágico:
+    </p>
+
+    <div class="code-scroll">
+<span class="c-comment">/* seletor { propriedade: valor; } */</span>
+<br>
+<br><span class="c-tag">h1</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">color</span>: <span class="c-str">#c9952a</span>;           <span class="c-comment">/* cor dourada */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">font-size</span>: <span class="c-num">3rem</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">text-align</span>: <span class="c-str">center</span>;
+<br>}
+<br>
+<br><span class="c-tag">p</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">color</span>: <span class="c-str">#2a1a0e</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">font-size</span>: <span class="c-num">1.1rem</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">line-height</span>: <span class="c-num">1.8</span>;
+<br>}
+<br>
+<br><span class="c-tag">body</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">background-color</span>: <span class="c-str">#f5edd6</span>; <span class="c-comment">/* pergaminho! */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">font-family</span>: <span class="c-str">Georgia, serif</span>;
+<br>}
+    </div>
+
+    <div class="character-intro" style="background:rgba(201,149,42,0.10);border:1px solid rgba(201,149,42,0.25);">
+      <span class="char-avatar">🧚</span>
+      <div>
+        <div class="char-name">✦ Fada Chromelina ✦</div>
+        <p class="char-quote" style="color:#3a2a1a;">"Cores no CSS podem ser escritas como nomes em inglês (<em>red</em>, <em>blue</em>) ou como códigos hexadecimais (#FF0000 para vermelho). Eu prefiro os hexadecimais — são mais precisos e mágicos!"</p>
+      </div>
+    </div>
+
+    <p>
+      As classes e IDs são como etiquetas mágicas que você cola nos elementos para controlá-los um a um. Enquanto o seletor de tag afeta TODOS os elementos daquele tipo, uma classe afeta apenas quem tiver aquela etiqueta:
+    </p>
+
+    <div class="code-scroll">
+<span class="c-comment">/* HTML */</span>
+<br><span class="c-tag">&lt;p</span> <span class="c-attr">class</span>=<span class="c-val">"magico"</span><span class="c-tag">&gt;</span><span class="c-text">Sou especial!</span><span class="c-tag">&lt;/p&gt;</span>
+<br>
+<br><span class="c-comment">/* CSS — o ponto (.) indica classe */</span>
+<br><span class="c-tag">.magico</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">color</span>: <span class="c-str">#9b6dff</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">font-weight</span>: <span class="c-str">bold</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">background</span>: <span class="c-str">#f0e8ff</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">padding</span>: <span class="c-num">8px 16px</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">border-radius</span>: <span class="c-num">4px</span>;
+<br>}
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">⚡ Missão do Capítulo II</div>
+      <p>Crie um arquivo <strong>"estilo.css"</strong> e conecte ao seu HTML com <code style="color:var(--crystal-purple);background:#f0e8ff;padding:2px 6px;border-radius:3px;">&lt;link rel="stylesheet" href="estilo.css"&gt;</code>:</p>
+      <ul>
+        <li>Pinte o fundo da página com sua cor favorita</li>
+        <li>Mude a fonte do h1 e o tamanho do texto</li>
+        <li>Crie uma classe ".destaque" com borda e cor especial</li>
+        <li>Aplique a classe em um parágrafo no HTML</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ CAPÍTULO III — SELETORES ════════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Capítulo III ✦</div>
+      <h2 class="chapter-title">O Cristal das Formas</h2>
+      <span class="chapter-emoji">🔮</span>
+      <p style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;margin-top:8px;">Box Model e Seletores Avançados</p>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <p>
+      No centro do reino havia um cristal especial — o Cristal das Formas. Quando um elemento HTML era colocado dentro dele, o cristal revelava seus segredos mais profundos: seus contornos invisíveis, seus espaços internos e externos, e todas as camadas que o compunham.
+    </p>
+
+    <div class="callout callout-scroll">
+      <p>Todo elemento HTML vive dentro de uma caixa invisível. O <strong>Box Model</strong> descreve essas camadas: <strong>content</strong> (conteúdo) → <strong>padding</strong> (espaço interno) → <strong>border</strong> (borda) → <strong>margin</strong> (espaço externo).</p>
+    </div>
+
+    <div style="background:#0d0820;border:1px solid rgba(201,149,42,0.3);border-radius:6px;padding:24px;margin:20px 0;text-align:center;font-family:'Courier New',monospace;font-size:0.85rem;">
+      <div style="display:inline-block;border:2px dashed rgba(201,149,42,0.4);padding:16px;color:rgba(201,149,42,0.6);position:relative;">
+        <span style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#0d0820;padding:0 8px;font-size:0.7rem;color:rgba(201,149,42,0.5);letter-spacing:0.2em;">MARGIN</span>
+        <div style="border:2px dashed rgba(74,158,255,0.5);padding:16px;color:rgba(74,158,255,0.6);position:relative;">
+          <span style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#0d0820;padding:0 8px;font-size:0.7rem;color:rgba(74,158,255,0.5);letter-spacing:0.2em;">BORDER</span>
+          <div style="border:2px dashed rgba(155,109,255,0.5);padding:16px;color:rgba(155,109,255,0.6);position:relative;">
+            <span style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#0d0820;padding:0 8px;font-size:0.7rem;color:rgba(155,109,255,0.5);letter-spacing:0.2em;">PADDING</span>
+            <div style="background:rgba(61,214,200,0.2);border:1px solid rgba(61,214,200,0.4);padding:10px 20px;color:#3dd6c8;font-size:0.8rem;letter-spacing:0.2em;">CONTENT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-scroll">
+<span class="c-tag">.caixa-magica</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">width</span>: <span class="c-num">300px</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">padding</span>: <span class="c-num">20px</span>;       <span class="c-comment">/* espaço interno */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">border</span>: <span class="c-num">2px</span> <span class="c-str">solid gold</span>; <span class="c-comment">/* borda dourada */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">margin</span>: <span class="c-num">16px auto</span>;   <span class="c-comment">/* centraliza! */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">border-radius</span>: <span class="c-num">8px</span>;  <span class="c-comment">/* cantos arredondados */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">box-shadow</span>: <span class="c-num">0 4px 20px</span> <span class="c-str">rgba(0,0,0,0.3)</span>;
+<br>}
+    </div>
+
+    <div class="callout callout-crystal">
+      <p><strong>Dica de mago:</strong> Use <code style="color:#ffd;background:rgba(255,255,255,0.1);padding:2px 5px;border-radius:3px;">margin: 0 auto</code> para centralizar qualquer caixa que tenha largura definida. É um dos feitiços mais usados de todo o reino!</p>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">⚡ Missão do Capítulo III</div>
+      <p>Crie um "card de personagem" com CSS:</p>
+      <ul>
+        <li>Uma &lt;div&gt; com classe ".card-personagem"</li>
+        <li>Defina width, padding, border e border-radius</li>
+        <li>Adicione um box-shadow para o efeito de profundidade</li>
+        <li>Use margin: 20px auto para centralizar na página</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ CAPÍTULO IV — FLEXBOX ═════════════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Capítulo IV ✦</div>
+      <h2 class="chapter-title">O Feitiço Flexível</h2>
+      <span class="chapter-emoji">💎</span>
+      <p style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;margin-top:8px;">Dominando o Flexbox</p>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <p>
+      Os elementos do reino viviam sempre empilhados um sobre o outro — como livros numa prateleira. Mas um dia, a Elfa Flexara revelou o feitiço mais poderoso de organização: o <em>Flexbox</em>. Com ele, os elementos podiam se organizar lado a lado, se esticar, se encolher e se alinhar como uma tropa de elite mágica!
+    </p>
+
+    <div class="callout callout-teal">
+      <p>Para ativar o Flexbox, basta dizer ao container pai: <code style="color:#aff;background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:3px;">display: flex</code>. Pronto! Os filhos imediatos automaticamente se organizam em linha.</p>
+    </div>
+
+    <div class="code-scroll">
+<span class="c-comment">/* O container que controla tudo */</span>
+<br><span class="c-tag">.exercito-magico</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">display</span>: <span class="c-str">flex</span>;               <span class="c-comment">/* ativa o feitiço! */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">justify-content</span>: <span class="c-str">center</span>;  <span class="c-comment">/* centraliza no eixo X */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">align-items</span>: <span class="c-str">center</span>;     <span class="c-comment">/* centraliza no eixo Y */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">gap</span>: <span class="c-num">16px</span>;               <span class="c-comment">/* espaço entre soldados */</span>
+<br>&nbsp;&nbsp;<span class="c-prop">flex-wrap</span>: <span class="c-str">wrap</span>;          <span class="c-comment">/* quebra linha se necessário */</span>
+<br>}
+<br>
+<br><span class="c-comment">/* Cada filho pode ter flex para crescer */</span>
+<br><span class="c-tag">.soldado</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">flex</span>: <span class="c-num">1</span>; <span class="c-comment">/* cresce igualmente para preencher espaço */</span>
+<br>}
+    </div>
+
+    <div class="flex-demo">
+      <div class="flex-demo-title">🔮 VISUALIZAÇÃO MÁGICA DO FLEXBOX</div>
+
+      <div class="flex-label">justify-content: flex-start (padrão)</div>
+      <div class="flex-row">
+        <div class="flex-box fb1">Fogo</div>
+        <div class="flex-box fb2">Água</div>
+        <div class="flex-box fb3">Terra</div>
+      </div>
+
+      <div class="flex-label">justify-content: center</div>
+      <div class="flex-row flex-row-center" style="gap:10px;">
+        <div class="flex-box fb1" style="flex:none;min-width:70px;">Fogo</div>
+        <div class="flex-box fb2" style="flex:none;min-width:90px;">Água</div>
+        <div class="flex-box fb3" style="flex:none;min-width:70px;">Terra</div>
+      </div>
+
+      <div class="flex-label">justify-content: space-between</div>
+      <div class="flex-row flex-row-between">
+        <div class="flex-box fb1" style="flex:none;min-width:70px;">Fogo</div>
+        <div class="flex-box fb2" style="flex:none;min-width:90px;">Água</div>
+        <div class="flex-box fb3" style="flex:none;min-width:70px;">Terra</div>
+      </div>
+    </div>
+
+    <div class="character-intro" style="background:rgba(201,149,42,0.10);border:1px solid rgba(201,149,42,0.25);">
+      <span class="char-avatar">🧝</span>
+      <div>
+        <div class="char-name">✦ Elfa Flexara ✦</div>
+        <p class="char-quote" style="color:#3a2a1a;">"Lembre-se: o Flexbox controla o eixo principal (horizontal por padrão). <em>justify-content</em> manda nos filhos no eixo principal, e <em>align-items</em> manda no eixo cruzado. Juntos são imbatíveis!"</p>
+      </div>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">⚡ Missão do Capítulo IV</div>
+      <p>Construa uma galeria de 4 cards de personagens lado a lado:</p>
+      <ul>
+        <li>Crie uma &lt;div class="galeria"&gt; com 4 .card dentro</li>
+        <li>Aplique display: flex, gap: 16px e flex-wrap: wrap</li>
+        <li>Use justify-content: center para centralizar</li>
+        <li>Cada .card deve ter flex: 1 e min-width: 150px</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ CAPÍTULO V — RESPONSIVIDADE ════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Capítulo V ✦</div>
+      <h2 class="chapter-title">O Espelho Responsivo</h2>
+      <span class="chapter-emoji">🌍</span>
+      <p style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;margin-top:8px;">Layouts para Todo Dispositivo</p>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <p>
+      O reino possuía um espelho mágico especial — o Espelho Responsivo. Quando você mostrava sua página nele, ela se transformava automaticamente: numa tela grande ficava espaçosa e majestosa; numa tela pequena se reorganizava elegantemente em uma única coluna. Este era o feitiço da Responsividade!
+    </p>
+
+    <div class="callout callout-scroll">
+      <p>Uma página <strong>responsiva</strong> se adapta ao tamanho de qualquer tela: computador, tablet ou celular. Isso é feito com <strong>Media Queries</strong> — instruções condicionais no CSS.</p>
+    </div>
+
+    <div class="resp-demo">
+      <div class="resp-device">
+        <div class="resp-screen" style="width:80px;height:100px;">
+          <div class="resp-bar" style="width:100%;height:12px;background:#9b6dff;"></div>
+          <div class="resp-bar" style="width:100%;height:8px;"></div>
+          <div class="resp-bar" style="width:100%;height:8px;"></div>
+          <div class="resp-bar" style="width:100%;height:8px;"></div>
+          <div class="resp-bar" style="width:60%;height:8px;"></div>
+        </div>
+        <div class="resp-device-label">📱 CELULAR</div>
+      </div>
+      <div class="resp-device">
+        <div class="resp-screen" style="width:130px;height:100px;">
+          <div class="resp-bar" style="width:100%;height:12px;background:#4a9eff;"></div>
+          <div style="display:flex;gap:4px;margin-top:4px;">
+            <div style="flex:1;background:#4a9eff;opacity:0.4;height:70px;border-radius:2px;"></div>
+            <div style="flex:2;display:flex;flex-direction:column;gap:4px;">
+              <div class="resp-bar" style="height:8px;"></div>
+              <div class="resp-bar" style="height:8px;width:90%;"></div>
+              <div class="resp-bar" style="height:8px;width:70%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="resp-device-label">📟 TABLET</div>
+      </div>
+      <div class="resp-device">
+        <div class="resp-screen" style="width:200px;height:100px;">
+          <div class="resp-bar" style="width:100%;height:14px;background:#3dd6c8;"></div>
+          <div style="display:flex;gap:4px;margin-top:4px;">
+            <div style="flex:1;background:#3dd6c8;opacity:0.3;height:72px;border-radius:2px;"></div>
+            <div style="flex:3;display:flex;flex-direction:column;gap:4px;">
+              <div class="resp-bar" style="height:8px;"></div>
+              <div class="resp-bar" style="height:8px;width:85%;"></div>
+              <div class="resp-bar" style="height:8px;width:70%;"></div>
+              <div style="display:flex;gap:3px;margin-top:4px;">
+                <div class="resp-bar" style="flex:1;height:20px;"></div>
+                <div class="resp-bar" style="flex:1;height:20px;"></div>
+                <div class="resp-bar" style="flex:1;height:20px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="resp-device-label">🖥️ DESKTOP</div>
+      </div>
+    </div>
+
+    <div class="code-scroll">
+<span class="c-comment">/* Padrão: celular primeiro (mobile first) */</span>
+<br><span class="c-tag">.galeria</span> {
+<br>&nbsp;&nbsp;<span class="c-prop">display</span>: <span class="c-str">flex</span>;
+<br>&nbsp;&nbsp;<span class="c-prop">flex-direction</span>: <span class="c-str">column</span>; <span class="c-comment">/* 1 coluna no celular */</span>
+<br>}
+<br>
+<br><span class="c-comment">/* Tablet: 768px ou mais */</span>
+<br><span class="c-tag">@media</span> (<span class="c-prop">min-width</span>: <span class="c-num">768px</span>) {
+<br>&nbsp;&nbsp;<span class="c-tag">.galeria</span> {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-prop">flex-direction</span>: <span class="c-str">row</span>;    <span class="c-comment">/* 2 colunas no tablet */</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-prop">flex-wrap</span>: <span class="c-str">wrap</span>;
+<br>&nbsp;&nbsp;}
+<br>}
+<br>
+<br><span class="c-comment">/* Desktop: 1024px ou mais */</span>
+<br><span class="c-tag">@media</span> (<span class="c-prop">min-width</span>: <span class="c-num">1024px</span>) {
+<br>&nbsp;&nbsp;<span class="c-tag">.galeria</span> {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-prop">justify-content</span>: <span class="c-str">space-between</span>; <span class="c-comment">/* spread no desktop */</span>
+<br>&nbsp;&nbsp;}
+<br>&nbsp;&nbsp;<span class="c-tag">.card</span> { <span class="c-prop">max-width</span>: <span class="c-num">280px</span>; }
+<br>}
+    </div>
+
+    <div class="callout callout-crystal">
+      <p><strong>Mobile First</strong> é a estratégia de começar o CSS pelo celular (tela menor) e ir adicionando regras para telas maiores. É a abordagem mais usada no mercado e a mais fácil de manter!</p>
+    </div>
+
+    <div class="challenge">
+      <div class="challenge-header">⚡ Missão do Capítulo V</div>
+      <p>Torne sua galeria responsiva:</p>
+      <ul>
+        <li>No celular: flex-direction: column (um card por linha)</li>
+        <li>No tablet (min-width: 600px): 2 cards por linha</li>
+        <li>No desktop (min-width: 900px): 4 cards por linha</li>
+        <li>Teste redimensionando a janela do navegador!</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ CAPÍTULO VI — DESAFIO FINAL ═════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Capítulo VI ✦</div>
+      <h2 class="chapter-title">A Grande Batalha</h2>
+      <span class="chapter-emoji">⚔️</span>
+      <p style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;margin-top:8px;">Desafio Final do Códice</p>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <p>
+      O Dragão du Erru surgiu das profundezas do código mal escrito com um rugido que fez tremer todos os servidores do reino. Mas você não estava mais sozinho — armado com HTML estruturado, CSS elegante, Flexbox poderoso e responsividade adaptável, você era agora um Feiticeiro Digital completo!
+    </p>
+
+    <div class="callout callout-dragon">
+      <p>O desafio final combina TODOS os conhecimentos dos capítulos anteriores. Não pule para cá sem ter completado as missões anteriores — o dragão sente fraqueza!</p>
+    </div>
+
+    <p>
+      O Códice de Cristal revela a missão definitiva: construir uma página completa do Reino de Webéria — do HTML ao CSS responsivo, passando pelo Flexbox. Esta será a sua obra-prima de feiticeiro!
+    </p>
+
+    <div class="challenge" style="border-color:var(--gold-light);background:linear-gradient(135deg,#1e1a08,#2e280a);">
+      <div class="challenge-header" style="color:var(--gold-light);">🏆 DESAFIO FINAL — A PÁGINA DO REINO</div>
+      <p style="color:#ffe8a0;">Construa uma página web completa com:</p>
+      <ul style="color:#ffe8a0;">
+        <li>🏰 Um <strong>&lt;header&gt;</strong> com o nome do reino (Flexbox: logo + navegação)</li>
+        <li>🗺️ Uma seção <strong>&lt;main&gt;</strong> com grid de 3 personagens (cards com foto, nome e habilidades)</li>
+        <li>📜 Uma seção de <strong>"Missões Ativas"</strong> com lista estilizada</li>
+        <li>🌍 Tudo <strong>responsivo</strong>: celular (1 coluna), tablet (2), desktop (3)</li>
+        <li>✨ Um <strong>&lt;footer&gt;</strong> com seus créditos de feiticeiro</li>
+        <li>🎨 Um arquivo CSS separado com pelo menos <strong>10 classes únicas</strong></li>
+      </ul>
+    </div>
+
+    <div class="character-intro" style="background:rgba(201,149,42,0.10);border:1px solid rgba(201,149,42,0.25);">
+      <span class="char-avatar">🐉</span>
+      <div>
+        <div class="char-name">✦ Dragão du Erru (derrotado) ✦</div>
+        <p class="char-quote" style="color:#3a2a1a;font-style:italic;">"Eu… perdi. Tags bem fechadas, classes organizadas, Flexbox dominado, responsividade impecável. Você realmente restaurou o Códice de Cristal. O reino está salvo… por enquanto. 🔥"</p>
+      </div>
+    </div>
+
+    <div class="magic-rule">🏆</div>
+
+    <p style="text-align:center;font-family:'Cinzel',serif;font-size:0.9rem;letter-spacing:0.2em;color:var(--gold);">
+      PARABÉNS, FEITICEIRO DIGITAL!<br>
+      <span style="font-family:'Crimson Pro',serif;font-size:1rem;font-style:italic;color:#3a2a1a;font-weight:400;letter-spacing:0;">Você completou os seis capítulos do Códice de Cristal.</span>
+    </p>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ APÊNDICE — GLOSSÁRIO ════════════════════════ -->
+<div class="page">
+  <div class="parchment-page">
+    <div class="chapter-header">
+      <div class="chapter-number">✦ Apêndice ✦</div>
+      <h2 class="chapter-title">O Grimório Completo</h2>
+      <span class="chapter-emoji">📚</span>
+      <p style="font-family:'Cinzel',serif;font-size:0.85rem;color:var(--gold);letter-spacing:0.15em;margin-top:8px;">Glossário Mágico de Termos</p>
+      <div class="chapter-rule"></div>
+    </div>
+
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <div class="glossary-term">HTML</div>
+        <div class="glossary-desc">HyperText Markup Language — o esqueleto de toda página web, formado por tags</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">CSS</div>
+        <div class="glossary-desc">Cascading Style Sheets — define aparência, cores, fontes e layout</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Tag</div>
+        <div class="glossary-desc">Marcação HTML entre &lt; e &gt;. Geralmente tem abertura e fechamento</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Seletor</div>
+        <div class="glossary-desc">Parte do CSS que indica qual elemento será estilizado</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Classe</div>
+        <div class="glossary-desc">Atributo HTML (class="nome") selecionado no CSS com ponto (.nome)</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Box Model</div>
+        <div class="glossary-desc">Modelo de caixas: content, padding, border e margin</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Flexbox</div>
+        <div class="glossary-desc">Sistema de layout CSS para organizar elementos em linha ou coluna</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Media Query</div>
+        <div class="glossary-desc">Regra CSS condicional que aplica estilos por tamanho de tela</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Responsivo</div>
+        <div class="glossary-desc">Layout que se adapta a qualquer tamanho de dispositivo</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">Mobile First</div>
+        <div class="glossary-desc">Estratégia de começar o CSS pelo celular e expandir para telas maiores</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">justify-content</div>
+        <div class="glossary-desc">Propriedade Flexbox que alinha itens no eixo principal</div>
+      </div>
+      <div class="glossary-item">
+        <div class="glossary-term">align-items</div>
+        <div class="glossary-desc">Propriedade Flexbox que alinha itens no eixo cruzado</div>
+      </div>
+    </div>
+
+    <div class="magic-rule">📖</div>
+
+    <div class="callout callout-spell">
+      <p><strong>Continue sua jornada!</strong> Após dominar HTML, CSS, Flexbox e Responsividade, seus próximos feitiços são: JavaScript (interatividade!), Git (salve seu progresso!), e frameworks como React. O reino digital é infinito!</p>
+    </div>
+
+    <p style="text-align:center;font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:0.25em;color:rgba(42,26,14,0.5);margin-top:30px;">
+      RECURSOS GRATUITOS RECOMENDADOS<br>
+      <span style="font-family:'Crimson Pro',serif;font-style:italic;letter-spacing:0;font-size:0.95rem;color:rgba(42,26,14,0.6);">
+        MDN Web Docs · freeCodeCamp · The Odin Project · CSS-Tricks
+      </span>
+    </p>
+  </div>
+</div>
+
+<div class="divider">✦ ✦ ✦<div class="divider-line"></div></div>
+
+<!-- ════════════════════════════════ PÁGINA FINAL ════════════════════════════════ -->
+<div class="page" style="min-height:60vh;">
+  <div class="final-glow">
+    <span style="font-size:5rem;display:block;margin-bottom:20px;animation:float 3s ease-in-out infinite;">🏆</span>
+    <h2 class="final-title">O Códice está Restaurado!</h2>
+    <p class="final-subtitle">✦ Você é agora um Feiticeiro Digital do Reino de Webéria ✦</p>
+    <span class="star-row">✨ ⭐ 🌟 ⭐ ✨</span>
+    <p style="font-family:'Crimson Pro',Georgia,serif;font-size:1.1rem;color:rgba(200,180,255,0.8);max-width:500px;margin:24px auto;line-height:1.8;font-style:italic;">
+      "Todo site que você visita foi criado por alguém que um dia também começou do zero. Hoje você deu o primeiro passo. Continue criando — o mundo digital precisa da sua magia."
+    </p>
+    <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.35em;color:rgba(200,180,255,0.4);margin-top:30px;">
+      ✦ FIM DA AVENTURA — ATÉ A PRÓXIMA MISSÃO ✦
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
